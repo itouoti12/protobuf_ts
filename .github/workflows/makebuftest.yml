@@ -72,7 +72,7 @@ jobs:
           DESCRIPTION="${DESCRIPTION//$'\n'/'%0A'}"
           echo "::set-output name=content::$DESCRIPTION"
 
-      - name: Pull Request to accept_protobuf_ts
+      - name: Copy & push branch protobuf file to accept_protobuf_ts
         uses: dmnemec/copy_file_to_another_repo_action@v1.1.1
         env:
           API_TOKEN_GITHUB: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -96,7 +96,7 @@ jobs:
             --head feature/update-protobuf-ts \
             --reviewer itouoti12
         env:
-          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       - uses: actions/upload-artifact@v2
         with:
