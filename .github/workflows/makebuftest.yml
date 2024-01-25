@@ -1,0 +1,59 @@
+name: make protobuf test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+
+jobs:
+
+  Generate:
+    # The type of runner that the job will run on
+    name: generate protobuf module ts file.
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: actions/setup-node@v3
+        id: setup_node_id
+        with:
+          node-version: '18'
+
+      - name: Add module
+        run: |
+          yarn install
+          yarn add @bufbuild/protobuf @bufbuild/protoc-gen-es @bufbuild/buf
+
+      - name: Add setting file
+        run: |
+          echo "# Learn more: https://docs.buf.build/configuration/v1/buf-gen-yaml" > buf.gen.yaml
+          echo "version: v1" >> buf.gen.yaml
+          echo "plugins:" >> buf.gen.yaml
+          echo "   - plugin: es" >> buf.gen.yaml
+          echo "     opt: target=ts" >> buf.gen.yaml
+          echo "     out: ./" >> buf.gen.yaml
+
+      - name: confirm path
+        run: |
+          pwd
+          ls -ltr
+
+
+      - name: generate module 
+        run: |
+          npx buf generate ./src/proto/example.proto
+
+      - name: confirm file 
+        run: |
+          pwd
+          ls -ltr
