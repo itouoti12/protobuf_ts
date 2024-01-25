@@ -57,3 +57,8 @@ jobs:
         run: |
           pwd
           ls -ltr
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: protobuf generate asset for ts
+          path: ./example_pb.ts
