@@ -20,8 +20,6 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Setup
         uses: actions/setup-node@v3
@@ -58,7 +56,49 @@ jobs:
           pwd
           ls -ltr
 
+      - name: Setup commit description
+        env:
+          RUN_URL: "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"
+          HEAD_COMMIT_URL: "${{ github.event.repository.html_url }}/commit/${{ github.event.after || github.sha }}"
+        id: setup_description
+        run: |
+          DESCRIPTION=$(cat << EOF
+          update proto file 🚀
+
+          created from ${{ env.RUN_URL }}
+          latest commit: ${{ env.HEAD_COMMIT_URL }}
+          )
+          DESCRIPTION="${DESCRIPTION//$'\n'/'%0A'}"
+          echo "::set-output name=content::$DESCRIPTION"
+
+      - name: Pull Request to accept_protobuf_ts
+        uses: dmnemec/copy_file_to_another_repo_action@v1.1.1
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        with:
+          source_file: "./example_pb.ts"
+          destination_repo: "itouoti12/accept_protobuf_ts"
+          destination_folder: "src/websocket/"
+          destination_branch: "master"
+          destination_branch_create: "feature/update-protobuf-ts"
+          user_email: "github-actions[bot]@users.noreply.github.com"
+          user_name: "github-actions[bot]"
+          commit_message: ${{ steps.setup_description.outputs.content }}
+
+      - name: create Pull Request to accept_protobuf_ts
+        run: |
+          gh pr create \
+            --title "update proto file " \
+            --body "${{ steps.setup_description.outputs.content }}" \
+            --repo itouoti12/accept_protobuf_ts \
+            --base master \
+            --head feature/update-protobuf-ts \
+            --reviewer itouoti12
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+
       - uses: actions/upload-artifact@v2
         with:
           name: example_pb.zip
           path: ./example_pb.ts
+
