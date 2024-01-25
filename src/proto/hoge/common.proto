@@ -1,0 +1,15 @@
+// 共通定義
+syntax = "proto3";
+
+package hoge.common;
+
+option java_package         = "hoge";
+option java_outer_classname = "Common";
+
+message Variant {
+  // value
+  oneof value {
+    bool b_value    = 1;  // Represents a bool value
+    int32 i32_value = 2;  // Represents a int32 value
+  }
+}

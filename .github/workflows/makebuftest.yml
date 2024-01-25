@@ -45,7 +45,7 @@ jobs:
           echo "plugins:" >> buf.gen.yaml
           echo "   - plugin: es" >> buf.gen.yaml
           echo "     opt: target=ts" >> buf.gen.yaml
-          echo "     out: ./" >> buf.gen.yaml
+          echo "     out: ./gen" >> buf.gen.yaml
 
       - name: confirm path
         run: |
@@ -55,7 +55,7 @@ jobs:
 
       - name: generate module 
         run: |
-          npx buf generate ./src/proto/example.proto
+          npx buf generate ./src/proto/hoge/
 
       - name: confirm file 
         run: |
@@ -83,7 +83,7 @@ jobs:
         env:
           API_TOKEN_GITHUB: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         with:
-          source_file: "./example_pb.ts"
+          source_file: "./gen/"
           destination_repo: "itouoti12/accept_protobuf_ts"
           destination_folder: "src/websocket/"
           destination_branch: "master"
@@ -108,7 +108,7 @@ jobs:
         if: ${{ always() }}
         with:
           name: example_pb.zip
-          path: ./example_pb.ts
+          path: ./gen
 
       - name: failure cause message
         if: failure()

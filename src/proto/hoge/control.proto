@@ -1,0 +1,13 @@
+// 車両制御命令
+syntax = "proto3";
+
+package hoge.control;
+
+option java_package         = "hoge";
+option java_outer_classname = "Control";
+
+import "common.proto";
+
+message HogeControl {
+  int64 timestamp                            = 1;  // タイムスタンプ(エポック秒)
+}
