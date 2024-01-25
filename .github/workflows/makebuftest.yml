@@ -1,6 +1,12 @@
 name: make protobuf test
 
 on:
+  push:
+    branches:
+      - master
+    paths:
+      - "src/proto/example.proto"
+
   workflow_dispatch:
 
 permissions:
@@ -99,7 +105,12 @@ jobs:
           GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
         with:
           name: example_pb.zip
           path: ./example_pb.ts
 
+      - name: failure cause message
+        if: failure()
+        run: |
+          echo "PR作成対象のブランチが既に存在しているため、failedとなりました。"
