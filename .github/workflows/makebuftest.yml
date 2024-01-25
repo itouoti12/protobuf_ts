@@ -60,5 +60,5 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: protobuf generate asset for ts
+          name: example_pb.zip
           path: ./example_pb.ts
