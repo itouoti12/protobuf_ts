@@ -67,6 +67,7 @@ jobs:
 
           created from ${{ env.RUN_URL }}
           latest commit: ${{ env.HEAD_COMMIT_URL }}
+          EOF
           )
           DESCRIPTION="${DESCRIPTION//$'\n'/'%0A'}"
           echo "::set-output name=content::$DESCRIPTION"
